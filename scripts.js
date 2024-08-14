@@ -12,11 +12,6 @@ const statusFilter = document.getElementById("statusFilter");
 const sortByNameButton = document.getElementById("sortByName");
 const themeSwitcher = document.getElementById("theme");
 
-let storedData = localStorage.getItem('teamMembers');
-if (storedData) {
-    teamMembers = JSON.parse(storedData);
-}
-
 function createTableRow(member) {
     const row = tableBody.insertRow();
     const nameCell = row.insertCell();
@@ -60,14 +55,10 @@ function createTableRow(member) {
         if (statusSelect.value === "Inativo" || statusSelect.value === "Disponível") {
             timeInput.value = "00:00:00";
             member.time = "00:00:00"; 
-        } else {
-            // Se o status mudou para um que requer cronômetro, reinicia o tempo
-            member.lastTimeUpdate = Date.now(); 
         }
         statusCell.setAttribute('aria-label', `Status de ${member.name}: ${statusSelect.value}`);
         member.status = statusSelect.value; 
         updateSummary();
-        updateLocalStorage(); 
     });
 }
 
@@ -79,59 +70,34 @@ function updateSummary() {
 }
 
 function startTimers() {
-    let lastAnimationFrameTime = null;
-
-    function updateTimers(timestamp) {
-        if (!lastAnimationFrameTime) {
-            lastAnimationFrameTime = timestamp;
-        }
-
-        const elapsedTime = (timestamp - lastAnimationFrameTime) / 1000; 
-        lastAnimationFrameTime = timestamp;
-
+    setInterval(() => {
         teamMembers.forEach((member, index) => {
             if (member.status !== "Inativo" && member.status !== "Disponível") {
-                if (!member.lastTimeUpdate) {
-                    member.lastTimeUpdate = Date.now();
+                let [hours, minutes, seconds] = member.time.split(":").map(Number);
+                seconds++;
+                if (seconds === 60) {
+                    seconds = 0;
+                    minutes++;
+                    if (minutes === 60) {
+                        minutes = 0;
+                        hours++;
+                    }
                 }
-
-                const totalElapsedSeconds = Math.floor((Date.now() - member.lastTimeUpdate) / 1000);
-                let remainingSeconds = totalElapsedSeconds;
-
-                const hours = Math.floor(remainingSeconds / 3600);
-                remainingSeconds %= 3600;
-                const minutes = Math.floor(remainingSeconds / 60);
-                remainingSeconds %= 60;
-                const seconds = remainingSeconds;
-
                 member.time = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
                 tableBody.rows[index].cells[2].firstChild.value = member.time;
             }
         });
-
-        requestAnimationFrame(updateTimers); 
-    }
-
-    requestAnimationFrame(updateTimers); 
+    }, 1000);
 }
 
 function createStatusFilterOptions() {
-  const allStatusOptions = [
-    "Testes e análises",
-    "Acesso remoto",
-    "Ausente (Lanche)",
-    "Ausente (Outros)",
-    "Pausa rápida",
-    "Inativo",
-    "Disponível",
-  ];
-  allStatusOptions.forEach((status) => {
-    const option = document.createElement("option");
-    option.value = status;
-    option.textContent = status;
-    statusFilter.appendChild(option);   
-
-  });
+    const uniqueStatuses = new Set(teamMembers.map(member => member.status));
+    uniqueStatuses.forEach(status => {
+        const option = document.createElement("option");
+        option.value = status;
+        option.textContent = status;
+        statusFilter.appendChild(option);
+    });
 }
 
 function filterTable() {
@@ -150,10 +116,6 @@ function sortTableByName() {
 function applyTheme(theme) {
     document.body.classList.remove("dark", "blue");
     document.body.classList.add(theme);
-}
-
-function updateLocalStorage() {
-    localStorage.setItem('teamMembers', JSON.stringify(teamMembers));
 }
 
 // Cria as linhas da tabela, atualiza o resumo, inicia os cronômetros e cria as opções de filtro
