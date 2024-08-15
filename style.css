@@ -12,8 +12,8 @@
 body {
     background-color: var(--primary-color);
     color: var(--text-color);
-    font-family: 'Roboto', sans-serif; /* Fonte moderna e legível */
-    line-height: 1.6; /* Espaçamento entre linhas confortável */
+    font-family: 'Roboto', sans-serif; 
+    line-height: 1.6; 
     margin: 0;
 }
 
@@ -44,18 +44,18 @@ body.blue {
 /* Hierarquia de Textos */
 h1 {
     font-size: 2.5em;
-    font-weight: 700; /* Título principal em destaque */
+    font-weight: 700; 
 }
 
 h2 {
     font-size: 1.8em;
-    font-weight: 500; /* Subtítulos com destaque moderado */
+    font-weight: 500; 
 }
 
 /* Layout em Grid */
 main {
     display: grid;
-    grid-template-columns: 1fr; /* Uma coluna em telas menores */
+    grid-template-columns: 1fr; 
     gap: 30px;
     padding: 30px;
     max-width: 960px;
@@ -64,53 +64,34 @@ main {
 
 @media (min-width: 768px) {
     main {
-        grid-template-columns: 1fr auto; /* Duas colunas em telas maiores, a segunda com largura automática para o resumo */
-        grid-template-rows: auto 1fr; /* Duas linhas, a primeira com altura automática para filtros e resumo, a segunda para a tabela */
+        grid-template-columns: 1fr auto; 
+        grid-template-rows: auto 1fr; 
     }
 
     #summary {
-        grid-column: 1 / 2; /* Resumo na primeira coluna */
-        grid-row: 1 / 2;    /* Resumo na primeira linha */
-        justify-self: start; /* Alinha o resumo à esquerda */
+        grid-column: 1 / 2; 
+        grid-row: 1 / 2;    
+        justify-self: start; 
     }
   
-      #filters {
-        grid-column: 2 / 3; /* Filtros na segunda coluna */
-        grid-row: 1 / 2;    /* Filtros na primeira linha */
+    #filters {
+        grid-column: 2 / 3; 
+        grid-row: 1 / 2;    
     }
 
     table {
-        grid-column: 1 / -1; /* Tabela ocupa todas as colunas */
-        grid-row: 2 / 3;    /* Tabela na segunda linha */
+        grid-column: 1 / -1; 
+        grid-row: 2 / 3;    
     }
 }
 
 /* Cabeçalho */
 header {
-    background: linear-gradient(to right, var(--primary-color), var(--secondary-color)); /* Gradiente sutil */
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-color)); 
     padding: 25px;
     text-align: center;
-    border-radius: 5px; /* Bordas arredondadas */
-    position: relative; /* Para posicionar o seletor de tema */
-}
-
-/* Seletor de Tema */
-#theme-switcher {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-}
-
-#theme-switcher label {
-    margin-right: 5px;
-}
-
-#theme-switcher select {
-    background-color: var(--primary-color);
-    color: var(--text-color);
-    padding: 5px;
-    border: 1px solid #555;
-    border-radius: 3px;
+    border-radius: 5px; 
+    position: relative; 
 }
 
 /* Filtros */
@@ -121,7 +102,7 @@ header {
 }
 
 #filters label {
-    font-weight: 500; /* Destaque sutil no label */
+    font-weight: 500; 
 }
 
 #filters select,
@@ -132,12 +113,12 @@ header {
     border: 1px solid #555;
     border-radius: 3px;
     cursor: pointer;
-    transition: background-color 0.3s ease; /* Transição suave para hover */
+    transition: background-color 0.3s ease; 
 }
 
 #filters select:hover,
 #filters button:hover {
-    background-color: #34495e; /* Cor mais clara ao passar o mouse */
+    background-color: #34495e; 
 }
 
 /* Tabela */
@@ -145,20 +126,20 @@ table {
     width: 100%;
     border-collapse: collapse;
     grid-column: 1 / -1;
-    border-radius: 5px; /* Bordas arredondadas */
-    overflow: hidden; /* Para o efeito de sombra */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    border-radius: 5px; 
+    overflow: hidden; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
 }
 
 th, td {
     padding: 15px;
     text-align: left;
-    border-bottom: 1px solid #555; /* Linhas horizontais */
+    border-bottom: 1px solid #555; 
 }
 
 th {
     background-color: var(--secondary-color);
-    font-weight: 600; /* Cabeçalho com destaque */
+    font-weight: 600; 
 }
 
 /* Resumo */
@@ -173,4 +154,55 @@ th {
 /* Rodapé (opcional) */
 footer {
   display: none; 
+}
+
+/* Estilos para o select na coluna de pausa */
+td select {
+    padding: 8px; 
+    border: none; 
+    appearance: none; 
+    -webkit-appearance: none; 
+    -moz-appearance: none; 
+    cursor: pointer; 
+    transition: opacity 0.3s ease; 
+}
+
+td select:hover {
+    opacity: 0.8; 
+}
+
+/* Cores para os status */
+td select option[value="Testes e análises"] { 
+    background-color: #b10202; 
+    color: white; 
+}
+
+td select option[value="Acesso remoto"] { 
+    background-color: #c3584b; 
+    color: black;
+}
+
+td select option[value="Ausente (Lanche)"] { 
+    background-color: #c7943e; 
+    color: black;
+}
+
+td select option[value="Ausente (Outros)"] { 
+    background-color: #c7943e; 
+    color: black;
+}
+
+td select option[value="Pausa rápida"] { 
+    background-color: #0a53a8; 
+    color: black;
+}
+
+td select option[value="Inativo"] { 
+    background-color: #e8eaed; 
+    color: black;
+}
+
+td select option[value="Disponível"] { 
+    background-color: #25d30c; 
+    color: black;
 }
