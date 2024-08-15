@@ -11,6 +11,17 @@ const summaryDiv = document.getElementById("summary");
 const statusFilter = document.getElementById("statusFilter");
 const themeSwitcher = document.getElementById("theme");
 
+// Paleta de cores para os status
+const statusColors = {
+    "Testes e análises": "#b10202",
+    "Acesso remoto": "#c3584b",
+    "Ausente (Lanche)": "#c7943e",
+    "Ausente (Outros)": "#c7943e",
+    "Pausa rápida": "#0a53a8",
+    "Inativo": "#e8eaed",
+    "Disponível": "#25d30c"
+};
+
 function createTableRow(member) {
     const row = tableBody.insertRow();
     const nameCell = row.insertCell();
@@ -41,7 +52,6 @@ function createTableRow(member) {
     timeInput.disabled = true;
     timeCell.appendChild(timeInput);
 
-    // Campo de comentário editável
     const commentInput = document.createElement("input");
     commentInput.type = "text";
     commentInput.value = member.comment;
@@ -50,12 +60,19 @@ function createTableRow(member) {
         member.comment = commentInput.value;
     });
 
+    // Aplicar a cor de fundo ao select com base no status
+    statusSelect.style.backgroundColor = statusColors[member.status] || "";
+
     statusSelect.addEventListener("change", () => {
         if (statusSelect.value === "Inativo" || statusSelect.value === "Disponível") {
             timeInput.value = "00:00:00";
             member.time = "00:00:00"; 
         }
+
+        // Atualizar o aria-label e a cor de fundo
         statusCell.setAttribute('aria-label', `Status de ${member.name}: ${statusSelect.value}`);
+        statusSelect.style.backgroundColor = statusColors[statusSelect.value] || "";
+
         member.status = statusSelect.value; 
         updateSummary();
     });
@@ -124,4 +141,4 @@ themeSwitcher.addEventListener("change", () => {
 });
 
 // Aplica o tema inicial (dark mode)
-applyTheme("dark"); 
+applyTheme("dark");
