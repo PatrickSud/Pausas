@@ -22,6 +22,15 @@ const statusColors = {
     "Disponível": "#25d30c"
 };
 
+
+// Inicialização do Pusher (substitua com suas credenciais)
+const pusher = new Pusher('3481fa8f1ebb6faff0a0', {
+    cluster: 'us2',
+    encrypted: true
+});
+
+const channel = pusher.subscribe('pausas-channel');
+
 function createTableRow(member) {
     const row = tableBody.insertRow();
     const nameCell = row.insertCell();
@@ -58,6 +67,12 @@ function createTableRow(member) {
     commentCell.appendChild(commentInput);
     commentInput.addEventListener("blur", () => {
         member.comment = commentInput.value;
+
+        // Enviar evento do Pusher para atualizar o comentário
+        channel.trigger('comment-update', {
+            name: member.name,
+            comment: member.comment
+        });
     });
 
     // Aplicar a cor de fundo ao select com base no status
@@ -75,6 +90,13 @@ function createTableRow(member) {
 
         member.status = statusSelect.value; 
         updateSummary();
+
+        // Enviar evento do Pusher para atualizar status e tempo
+        channel.trigger('status-update', {
+            name: member.name,
+            status: statusSelect.value,
+            time: member.time
+        });
     });
 }
 
@@ -127,6 +149,25 @@ function applyTheme(theme) {
     document.body.classList.remove("dark", "blue");
     document.body.classList.add(theme);
 }
+
+// Listener para eventos do Pusher
+channel.bind('status-update', (data) => {
+    const row = Array.from(tableBody.rows).find(row => row.cells[0].textContent === data.name);
+
+    if (row) {
+        row.cells[1].firstChild.value = data.status;
+        row.cells[2].firstChild.value = data.time;
+        row.cells[1].firstChild.style.backgroundColor = statusColors[data.status] || "";
+
+        const memberIndex = teamMembers.findIndex(member => member.name === data.name);
+        if (memberIndex !== -1) {
+            teamMembers[memberIndex].status = data.status;
+            teamMembers[memberIndex].time = data.time;
+        }
+
+        updateSummary();
+    }
+});
 
 // Cria as linhas da tabela, atualiza o resumo, inicia os cronômetros e cria as opções de filtro
 teamMembers.forEach(createTableRow);
