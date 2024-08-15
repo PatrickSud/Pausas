@@ -9,7 +9,6 @@ const teamMembers = [
 const tableBody = document.querySelector("table tbody");
 const summaryDiv = document.getElementById("summary");
 const statusFilter = document.getElementById("statusFilter");
-const sortByNameButton = document.getElementById("sortByName");
 const themeSwitcher = document.getElementById("theme");
 
 function createTableRow(member) {
@@ -107,12 +106,6 @@ function filterTable() {
     });
 }
 
-function sortTableByName() {
-    const rows = Array.from(tableBody.rows);
-    rows.sort((a, b) => a.cells[0].textContent.localeCompare(b.cells[0].textContent));
-    rows.forEach(row => tableBody.appendChild(row));
-}
-
 function applyTheme(theme) {
     document.body.classList.remove("dark", "blue");
     document.body.classList.add(theme);
@@ -126,7 +119,6 @@ createStatusFilterOptions();
 
 // Adiciona os event listeners para filtro, ordenação e troca de tema
 statusFilter.addEventListener("change", filterTable);
-sortByNameButton.addEventListener("click", sortTableByName);
 themeSwitcher.addEventListener("change", () => {
     applyTheme(themeSwitcher.value);
 });
