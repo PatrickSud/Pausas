@@ -22,6 +22,25 @@ body.blue {
     --secondary-color: var(--blue-secondary-color);
 }
 
+/* Seletor de Tema */
+#theme-switcher {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+#theme-switcher label {
+    margin-right: 5px;
+}
+
+#theme-switcher select {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    padding: 5px;
+    border: 1px solid #555;
+    border-radius: 3px;
+}
+
 /* Hierarquia de Textos */
 h1 {
     font-size: 2.5em;
@@ -36,8 +55,8 @@ h2 {
 /* Layout em Grid */
 main {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 30px; /* Aumenta o espaçamento entre elementos */
+    grid-template-columns: 1fr; /* Uma coluna em telas menores */
+    gap: 30px;
     padding: 30px;
     max-width: 960px;
     margin: 0 auto;
@@ -45,11 +64,24 @@ main {
 
 @media (min-width: 768px) {
     main {
-        grid-template-columns: 1fr 280px; /* Coluna de filtros um pouco mais larga */
+        grid-template-columns: 1fr auto; /* Duas colunas em telas maiores, a segunda com largura automática para o resumo */
+        grid-template-rows: auto 1fr; /* Duas linhas, a primeira com altura automática para filtros e resumo, a segunda para a tabela */
     }
 
-    #filters {
-        grid-column: 2;
+    #summary {
+        grid-column: 1 / 2; /* Resumo na primeira coluna */
+        grid-row: 1 / 2;    /* Resumo na primeira linha */
+        justify-self: start; /* Alinha o resumo à esquerda */
+    }
+  
+      #filters {
+        grid-column: 2 / 3; /* Filtros na segunda coluna */
+        grid-row: 1 / 2;    /* Filtros na primeira linha */
+    }
+
+    table {
+        grid-column: 1 / -1; /* Tabela ocupa todas as colunas */
+        grid-row: 2 / 3;    /* Tabela na segunda linha */
     }
 }
 
