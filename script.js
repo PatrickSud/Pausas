@@ -48,7 +48,8 @@ function createTableRow(member) {
         const optionElement = document.createElement("option");
         optionElement.value = option;
         optionElement.textContent = option;
-        if (option === member.status) {
+        if (option   
+ === member.status) {
             optionElement.selected = true;
         }
         statusSelect.appendChild(optionElement);
@@ -69,7 +70,7 @@ function createTableRow(member) {
         member.comment = commentInput.value;
 
         // Enviar evento do Pusher para atualizar o comentário
-        channel.trigger('comment-update', {
+        channel.trigger('client-comment-update', {
             name: member.name,
             comment: member.comment
         });
@@ -92,7 +93,7 @@ function createTableRow(member) {
         updateSummary();
 
         // Enviar evento do Pusher para atualizar status e tempo
-        channel.trigger('status-update', {
+        channel.trigger('client-status-update', {
             name: member.name,
             status: statusSelect.value,
             time: member.time
@@ -121,8 +122,14 @@ function startTimers() {
                         hours++;
                     }
                 }
-                member.time = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                member.time = `<span class="math-inline">\{hours\.toString\(\)\.padStart\(2, '0'\)\}\:</span>{minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
                 tableBody.rows[index].cells[2].firstChild.value = member.time;
+
+                // Enviar evento do Pusher para atualizar o tempo
+                channel.trigger('client-time-update', {
+                    name: member.name,
+                    time: member.time
+                });
             }
         });
     }, 1000);
@@ -150,8 +157,8 @@ function applyTheme(theme) {
     document.body.classList.add(theme);
 }
 
-// Listener para eventos do Pusher
-channel.bind('status-update', (data) => {
+// Listener para eventos do Pusher (agora escutando 'client-status-update')
+channel.bind('client-status-update', (data) => {
     const row = Array.from(tableBody.rows).find(row => row.cells[0].textContent === data.name);
 
     if (row) {
@@ -166,6 +173,34 @@ channel.bind('status-update', (data) => {
         }
 
         updateSummary();
+    }
+});
+
+// Listener para eventos do Pusher (agora escutando 'client-comment-update')
+channel.bind('client-comment-update', (data) => {
+    const row = Array.from(tableBody.rows).find(row => row.cells[0].textContent === data.name);
+
+    if (row) {
+        row.cells[3].firstChild.value = data.comment; 
+
+        const memberIndex = teamMembers.findIndex(member => member.name === data.name);
+        if (memberIndex !== -1) {
+            teamMembers[memberIndex].comment = data.comment; 
+        }
+    }
+});
+
+// Listener para eventos do Pusher (agora escutando 'client-time-update')
+channel.bind('client-time-update', (data) => {
+    const row = Array.from(tableBody.rows).find(row => row.cells[0].textContent === data.name);
+
+    if (row) {
+        row.cells[2].firstChild.value = data.time; 
+
+        const memberIndex = teamMembers.findIndex(member => member.name === data.name);
+        if (memberIndex !== -1) {
+            teamMembers[memberIndex].time = data.time; 
+        }
     }
 });
 
