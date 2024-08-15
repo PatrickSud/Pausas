@@ -1,0 +1,144 @@
+/* Paleta de Cores */
+:root {
+    --primary-color: #222; /* Azul escuro mais profundo */
+    --secondary-color: #282828; /* Cinza mais escuro */
+    --text-color: #ecf0f1; 
+
+    --blue-primary-color: #2c3e50; 
+    --blue-secondary-color: #34495e; 
+}
+
+/* Estilos Gerais e Acessibilidade */
+body {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    font-family: 'Roboto', sans-serif; /* Fonte moderna e legível */
+    line-height: 1.6; /* Espaçamento entre linhas confortável */
+    margin: 0;
+}
+
+body.blue {
+    --primary-color: var(--blue-primary-color);
+    --secondary-color: var(--blue-secondary-color);
+}
+
+/* Hierarquia de Textos */
+h1 {
+    font-size: 2.5em;
+    font-weight: 700; /* Título principal em destaque */
+}
+
+h2 {
+    font-size: 1.8em;
+    font-weight: 500; /* Subtítulos com destaque moderado */
+}
+
+/* Layout em Grid */
+main {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px; /* Aumenta o espaçamento entre elementos */
+    padding: 30px;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+    main {
+        grid-template-columns: 1fr 280px; /* Coluna de filtros um pouco mais larga */
+    }
+
+    #filters {
+        grid-column: 2;
+    }
+}
+
+/* Cabeçalho */
+header {
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-color)); /* Gradiente sutil */
+    padding: 25px;
+    text-align: center;
+    border-radius: 5px; /* Bordas arredondadas */
+    position: relative; /* Para posicionar o seletor de tema */
+}
+
+/* Seletor de Tema */
+#theme-switcher {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+#theme-switcher label {
+    margin-right: 5px;
+}
+
+#theme-switcher select {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    padding: 5px;
+    border: 1px solid #555;
+    border-radius: 3px;
+}
+
+/* Filtros */
+#filters {
+    background-color: var(--secondary-color);
+    padding: 20px;
+    border-radius: 5px;
+}
+
+#filters label {
+    font-weight: 500; /* Destaque sutil no label */
+}
+
+#filters select,
+#filters button {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    padding: 10px;
+    border: 1px solid #555;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Transição suave para hover */
+}
+
+#filters select:hover,
+#filters button:hover {
+    background-color: #34495e; /* Cor mais clara ao passar o mouse */
+}
+
+/* Tabela */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    grid-column: 1 / -1;
+    border-radius: 5px; /* Bordas arredondadas */
+    overflow: hidden; /* Para o efeito de sombra */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+}
+
+th, td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #555; /* Linhas horizontais */
+}
+
+th {
+    background-color: var(--secondary-color);
+    font-weight: 600; /* Cabeçalho com destaque */
+}
+
+/* Resumo */
+#summary {
+    text-align: center;
+    font-size: 1.2em;
+    padding: 15px;
+    background-color: var(--secondary-color);
+    border-radius: 5px;
+}
+
+/* Rodapé (opcional) */
+footer {
+  display: none; 
+}
