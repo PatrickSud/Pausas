@@ -22,15 +22,6 @@ const statusColors = {
     "Disponível": "#25d30c"
 };
 
-
-// Inicialização do Pusher (substitua com suas credenciais)
-const pusher = new Pusher('3481fa8f1ebb6faff0a0', {
-    cluster: 'us2',
-    encrypted: true
-});
-
-const channel = pusher.subscribe('pausas-channel');
-
 function createTableRow(member) {
     const row = tableBody.insertRow();
     const nameCell = row.insertCell();
@@ -48,8 +39,7 @@ function createTableRow(member) {
         const optionElement = document.createElement("option");
         optionElement.value = option;
         optionElement.textContent = option;
-        if (option   
- === member.status) {
+        if (option === member.status) {
             optionElement.selected = true;
         }
         statusSelect.appendChild(optionElement);
@@ -68,12 +58,6 @@ function createTableRow(member) {
     commentCell.appendChild(commentInput);
     commentInput.addEventListener("blur", () => {
         member.comment = commentInput.value;
-
-        // Enviar evento do Pusher para atualizar o comentário
-        channel.trigger('client-comment-update', {
-            name: member.name,
-            comment: member.comment
-        });
     });
 
     // Aplicar a cor de fundo ao select com base no status
@@ -91,13 +75,6 @@ function createTableRow(member) {
 
         member.status = statusSelect.value; 
         updateSummary();
-
-        // Enviar evento do Pusher para atualizar status e tempo
-        channel.trigger('client-status-update', {
-            name: member.name,
-            status: statusSelect.value,
-            time: member.time
-        });
     });
 }
 
@@ -122,14 +99,8 @@ function startTimers() {
                         hours++;
                     }
                 }
-                member.time = `<span class="math-inline">\{hours\.toString\(\)\.padStart\(2, '0'\)\}\:</span>{minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                member.time = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
                 tableBody.rows[index].cells[2].firstChild.value = member.time;
-
-                // Enviar evento do Pusher para atualizar o tempo
-                channel.trigger('client-time-update', {
-                    name: member.name,
-                    time: member.time
-                });
             }
         });
     }, 1000);
@@ -157,53 +128,6 @@ function applyTheme(theme) {
     document.body.classList.add(theme);
 }
 
-// Listener para eventos do Pusher (agora escutando 'client-status-update')
-channel.bind('client-status-update', (data) => {
-    const row = Array.from(tableBody.rows).find(row => row.cells[0].textContent === data.name);
-
-    if (row) {
-        row.cells[1].firstChild.value = data.status;
-        row.cells[2].firstChild.value = data.time;
-        row.cells[1].firstChild.style.backgroundColor = statusColors[data.status] || "";
-
-        const memberIndex = teamMembers.findIndex(member => member.name === data.name);
-        if (memberIndex !== -1) {
-            teamMembers[memberIndex].status = data.status;
-            teamMembers[memberIndex].time = data.time;
-        }
-
-        updateSummary();
-    }
-});
-
-// Listener para eventos do Pusher (agora escutando 'client-comment-update')
-channel.bind('client-comment-update', (data) => {
-    const row = Array.from(tableBody.rows).find(row => row.cells[0].textContent === data.name);
-
-    if (row) {
-        row.cells[3].firstChild.value = data.comment; 
-
-        const memberIndex = teamMembers.findIndex(member => member.name === data.name);
-        if (memberIndex !== -1) {
-            teamMembers[memberIndex].comment = data.comment; 
-        }
-    }
-});
-
-// Listener para eventos do Pusher (agora escutando 'client-time-update')
-channel.bind('client-time-update', (data) => {
-    const row = Array.from(tableBody.rows).find(row => row.cells[0].textContent === data.name);
-
-    if (row) {
-        row.cells[2].firstChild.value = data.time; 
-
-        const memberIndex = teamMembers.findIndex(member => member.name === data.name);
-        if (memberIndex !== -1) {
-            teamMembers[memberIndex].time = data.time; 
-        }
-    }
-});
-
 // Cria as linhas da tabela, atualiza o resumo, inicia os cronômetros e cria as opções de filtro
 teamMembers.forEach(createTableRow);
 updateSummary();
@@ -218,3 +142,4 @@ themeSwitcher.addEventListener("change", () => {
 
 // Aplica o tema inicial (dark mode)
 applyTheme("dark");
+
