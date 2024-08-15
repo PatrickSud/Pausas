@@ -143,3 +143,4 @@ themeSwitcher.addEventListener("change", () => {
 // Aplica o tema inicial (dark mode)
 applyTheme("dark");
 
+
