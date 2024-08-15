@@ -184,7 +184,7 @@ td select option[value="Acesso remoto"] {
 
 td select option[value="Ausente (Lanche)"] { 
     background-color: #c7943e; 
-    color: black;
+    color: white;
 }
 
 td select option[value="Ausente (Outros)"] { 
